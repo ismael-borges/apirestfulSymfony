@@ -56,10 +56,13 @@ abstract class BaseController extends AbstractController
 
     public function buscarTodos(Request $request): Response
     {
+        [$limite, $pagina] = $this->extratorDadosRequest->buscaDadosPorPaginacao($request);
         return new JsonResponse(
             $this->repository->findBy(
-                $this->extratorDadosRequest->getDataFilter($request),
-                $this->extratorDadosRequest->getDataSort($request),
+                $this->extratorDadosRequest->buscaDadosDeFiltro($request),
+                $this->extratorDadosRequest->buscaDadosOrdenacao($request),
+                $limite,
+                ($pagina - 1) * $limite
             )
         );
     }
