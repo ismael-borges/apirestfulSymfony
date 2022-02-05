@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Helper\EntidadeFactory;
+use App\Helper\ExtratorDadosRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,15 +16,18 @@ abstract class BaseController extends AbstractController
     protected ObjectRepository $repository;
     protected EntityManagerInterface $entityManager;
     protected EntidadeFactory $factory;
+    private ExtratorDadosRequest $extratorDadosRequest;
 
     public function __construct(
         ObjectRepository $repository,
         EntityManagerInterface $entityManager,
-        EntidadeFactory $factory
+        EntidadeFactory $factory,
+        ExtratorDadosRequest $extratorDadosRequest
     ) {
         $this->repository = $repository;
         $this->entityManager = $entityManager;
         $this->factory = $factory;
+        $this->extratorDadosRequest = $extratorDadosRequest;
     }
 
     abstract function atualizarEntity($content, $entity);
@@ -52,8 +56,12 @@ abstract class BaseController extends AbstractController
 
     public function buscarTodos(Request $request): Response
     {
-        $sort = $request->query->all('sort');
-        return new JsonResponse($this->repository->findBy([], $sort));
+        return new JsonResponse(
+            $this->repository->findBy(
+                $this->extratorDadosRequest->getDataFilter($request),
+                $this->extratorDadosRequest->getDataSort($request),
+            )
+        );
     }
 
     public function buscarUm(int $id): Response
