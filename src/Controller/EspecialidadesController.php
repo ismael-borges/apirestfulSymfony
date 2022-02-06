@@ -28,8 +28,15 @@ class EspecialidadesController extends BaseController
      * @param Especialidade $content
      * @param Especialidade $entity
      */
-    public function atualizarEntity($content, $entity)
+    public function atualizarEntity($id, $content)
     {
+        $entity = $this->repository->find($id);
+
+        if (is_null($entity)) {
+            throw new \InvalidArgumentException();
+        }
+
         $entity->setDescricao($content->getDescricao());
+        return $entity;
     }
 }

@@ -7,6 +7,7 @@ use App\Helper\ExtratorDadosRequest;
 use App\Helper\MedicoFactory;
 use App\Repository\MedicoRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use http\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,15 +32,22 @@ class MedicosController extends BaseController
      * @param Medico $content
      * @param Medico $entity
      */
-    public function atualizarEntity($content, $entity)
+    public function atualizarEntity($id, $content)
     {
+        $entity = $this->repository->find($id);
+
+        if (is_null($entity)) {
+            throw new \InvalidArgumentException();
+        }
+
         $entity
             ->setCrm($content->getCrm())
             ->setNome($content->getNome())
             ->setEspecialidade($content->getEspecialidade());
+        return $entity;
     }
 
-    #[Route('/especialidades/{especialidadeId}/medicos', methods: 'GET')]
+    #[Route('/especialidade/{especialidadeId}/medicos', methods: 'GET')]
     public function buscaPorEspecialidade(int $especialidadeId): Response
     {
         $medicos = $this->repository->findby([
