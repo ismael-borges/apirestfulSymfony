@@ -20,6 +20,9 @@
     "doctrine/common": {
         "version": "3.2.1"
     },
+    "doctrine/data-fixtures": {
+        "version": "1.5.2"
+    },
     "doctrine/dbal": {
         "version": "3.3.0"
     },
@@ -40,6 +43,18 @@
             "./config/packages/test/doctrine.yaml",
             "./src/Entity/.gitignore",
             "./src/Repository/.gitignore"
+        ]
+    },
+    "doctrine/doctrine-fixtures-bundle": {
+        "version": "3.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "1f5514cfa15b947298df4d771e694e578d4c204d"
+        },
+        "files": [
+            "./src/DataFixtures/AppFixtures.php"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
@@ -78,6 +93,9 @@
     },
     "doctrine/sql-formatter": {
         "version": "1.1.2"
+    },
+    "firebase/php-jwt": {
+        "version": "v6.0.0"
     },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
@@ -206,6 +224,9 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/password-hasher": {
+        "version": "v6.0.3"
+    },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.24.0"
     },
@@ -217,6 +238,15 @@
     },
     "symfony/polyfill-php81": {
         "version": "v1.24.0"
+    },
+    "symfony/polyfill-uuid": {
+        "version": "v1.24.0"
+    },
+    "symfony/property-access": {
+        "version": "v6.0.3"
+    },
+    "symfony/property-info": {
+        "version": "v6.0.3"
     },
     "symfony/proxy-manager-bridge": {
         "version": "v6.0.2"
@@ -237,6 +267,27 @@
     "symfony/runtime": {
         "version": "v6.0.0"
     },
+    "symfony/security-bundle": {
+        "version": "6.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.3",
+            "ref": "09b5e809bd7a992061febd05b797c64a2d93b5cd"
+        },
+        "files": [
+            "./config/packages/security.yaml"
+        ]
+    },
+    "symfony/security-core": {
+        "version": "v6.0.3"
+    },
+    "symfony/security-csrf": {
+        "version": "v6.0.3"
+    },
+    "symfony/security-http": {
+        "version": "v6.0.3"
+    },
     "symfony/service-contracts": {
         "version": "v3.0.0"
     },
@@ -245,6 +296,9 @@
     },
     "symfony/string": {
         "version": "v6.0.2"
+    },
+    "symfony/uid": {
+        "version": "v6.0.3"
     },
     "symfony/var-dumper": {
         "version": "v6.0.2"
