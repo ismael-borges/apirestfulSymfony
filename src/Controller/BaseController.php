@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Helper\EntidadeFactory;
 use App\Helper\ExtratorDadosRequest;
+use App\Helper\ResponseFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -57,19 +58,35 @@ abstract class BaseController extends AbstractController
     public function buscarTodos(Request $request): Response
     {
         [$limite, $pagina] = $this->extratorDadosRequest->buscaDadosPorPaginacao($request);
-        return new JsonResponse(
-            $this->repository->findBy(
-                $this->extratorDadosRequest->buscaDadosDeFiltro($request),
-                $this->extratorDadosRequest->buscaDadosOrdenacao($request),
-                $limite,
-                ($pagina - 1) * $limite
-            )
+        $conteudo = $this->repository->findBy(
+            $this->extratorDadosRequest->buscaDadosDeFiltro($request),
+            $this->extratorDadosRequest->buscaDadosOrdenacao($request),
+            $limite,
+            ($pagina - 1) * $limite
         );
+        $statusResposta = is_null($conteudo) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
+        $fabricaDeResposta = new ResponseFactory(
+            true,
+            $statusResposta,
+            $pagina,
+            $limite,
+            $conteudo
+        );
+        return $fabricaDeResposta->getResponse();
     }
 
     public function buscarUm(int $id): Response
     {
-        return new JsonResponse($this->repository->find($id));
+        $conteudo = $this->repository->find($id);
+        $statusResposta = is_null($conteudo) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
+        $fabricaDeResposta = new ResponseFactory(
+            true,
+            $statusResposta,
+            null,
+            null,
+            $conteudo
+        );
+        return $fabricaDeResposta->getResponse();
     }
 
     public function remove(int $id): Response
