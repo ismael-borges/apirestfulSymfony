@@ -76,6 +76,16 @@ class Medico implements \JsonSerializable
             "crm" => $this->getCrm(),
             "nome" => $this->getNome(),
             "especialidade" => $this->getEspecialidade(),
+            "_links" => [
+                [
+                    "rel" => "self",
+                    "path" => "/medico/".$this->getId()
+                ],
+                [
+                    "rel" => "especialidade",
+                    "path" => "/especialidade/".$this->getEspecialidade()->getId()
+                ]
+            ]
         ];
     }
 }

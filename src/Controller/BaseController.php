@@ -44,15 +44,28 @@ abstract class BaseController extends AbstractController
     public function atualizar(int $id, Request $request): Response
     {
         $content = $this->factory->criarEntidade($request->getContent());
-        $entity = $this->repository->find($id);
+        try {
+            $entity = $this->atualizarEntity($id, $content);
+            $this->entityManager->flush();
+            $fabrica = new ResponseFactory(
+                true,
+                Response::HTTP_OK,
+                null,
+                null,
+                $entity
 
-        if (is_null($entity)) {
-            return new Response("", Response::HTTP_NOT_FOUND);
+            );
+            return $fabrica->getResponse();
+        }catch (\InvalidArgumentException $ex){
+            $fabrica = new ResponseFactory(
+                false,
+                Response::HTTP_NOT_FOUND,
+                null,
+                null,
+                "Recurso não encontrado"
+            );
+            return $fabrica->getResponse();
         }
-
-        $this->atualizarEntity($content, $entity);
-        $this->entityManager->flush();
-        return new JsonResponse($entity);
     }
 
     public function buscarTodos(Request $request): Response
