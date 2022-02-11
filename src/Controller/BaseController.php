@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\HypermidiaResponse;
 use App\Helper\EntidadeFactory;
 use App\Helper\ExtratorDadosRequest;
 use App\Helper\ResponseFactory;
@@ -70,36 +71,27 @@ abstract class BaseController extends AbstractController
 
     public function buscarTodos(Request $request): Response
     {
-        [$limite, $pagina] = $this->extratorDadosRequest->buscaDadosPorPaginacao($request);
-        $conteudo = $this->repository->findBy(
-            $this->extratorDadosRequest->buscaDadosDeFiltro($request),
-            $this->extratorDadosRequest->buscaDadosOrdenacao($request),
-            $limite,
-            ($pagina - 1) * $limite
-        );
-        $statusResposta = is_null($conteudo) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
-        $fabricaDeResposta = new ResponseFactory(
-            true,
-            $statusResposta,
-            $pagina,
-            $limite,
-            $conteudo
-        );
-        return $fabricaDeResposta->getResponse();
+        try {
+            [$limite, $pagina] = $this->extratorDadosRequest->buscaDadosPorPaginacao($request);
+            $conteudo = $this->repository->findBy(
+                $this->extratorDadosRequest->buscaDadosDeFiltro($request),
+                $this->extratorDadosRequest->buscaDadosOrdenacao($request),
+                $limite,
+                ($pagina - 1) * $limite
+            );
+            $hypermidiaResponse = new HypermidiaResponse($conteudo, true, Response::HTTP_OK, $pagina, $limite);
+        } catch(\Throwable $error){
+            $hypermidiaResponse = HypermidiaResponse::fromError($error);
+        }
+
+        return $hypermidiaResponse->getResponse();
     }
 
     public function buscarUm(int $id): Response
     {
         $conteudo = $this->repository->find($id);
-        $statusResposta = is_null($conteudo) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
-        $fabricaDeResposta = new ResponseFactory(
-            true,
-            $statusResposta,
-            null,
-            null,
-            $conteudo
-        );
-        return $fabricaDeResposta->getResponse();
+        $hypermidiaResponse = new HypermidiaResponse($conteudo, true, Response::HTTP_OK, null);
+        return $hypermidiaResponse->getResponse();
     }
 
     public function remove(int $id): Response

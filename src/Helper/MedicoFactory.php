@@ -17,13 +17,22 @@ class MedicoFactory implements EntidadeFactory
     public function criarEntidade(string $json): Medico
     {
         $data = json_decode($json);
+        $this->checkAllProperties($data);
         $medico = new Medico();
         $medico->setCrm($data->crm)
             ->setNome($data->nome)
             ->setEspecialidade(
                 $this->especialidadeRepository->find($data->especialidadeId)
             );
-
         return $medico;
+    }
+
+    private function checkAllProperties(object $data): void
+    {
+        if (!property_exists($data, 'nome')
+            || !property_exists($data, 'crm')
+            || !property_exists($data, 'especialidadeId')) {
+            throw new EntityFactoryException('Parâmetro incorreto!');
+        }
     }
 }
